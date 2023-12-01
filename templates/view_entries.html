@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Journal Entries</title>
+</head>
+<body>
+    <h2>My Journal Entries</h2>
+    {% for entry in entries %}
+        <p>{{ entry.timestamp }}: {{ entry.content }}</p>
+        {% if entry.guided_responses_list %}
+            <ul>
+                {% for response in entry.guided_responses_list %}
+                    <li>{{ response.question }}: {{ response.response }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+            <!-- Delete Button -->
+            <form action="{{ url_for('delete_entry', entry_id=entry.id) }}" method="post">
+                <input type="submit" value="Delete Entry">
+            </form>
+        </div>
+    {% endfor %}
+    <a href="/add_entry">Standard Journal Entry</a>
+    <a href="/guided_entry">Guided Journal Entry</a>
+    <a href="/view_entries">View My Entries</a>
+</body>
+</html>
