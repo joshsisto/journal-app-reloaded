@@ -75,6 +75,15 @@ def guided_entry():
         )
         db.session.add(feeling_reason_response)
 
+        time_elapsed_response = request.form.get('time_elapsed')
+        if time_elapsed_response:  # Check if the response is provided
+            time_elapsed_response_entry = GuidedJournalResponse(
+                journal_entry_id=new_entry.id,
+                question="It's been a while since your last journal entry. What's happened since then?",
+                response=time_elapsed_response
+            )
+            db.session.add(time_elapsed_response_entry)
+
         # ... Add more questions as needed ...
 
         db.session.commit()
