@@ -6,7 +6,7 @@
 <body>
     <h2>My Journal Entries</h2>
     {% for entry in entries %}
-        <p>{{ entry.timestamp }}: {{ entry.content }}</p>
+        <p>{{ entry.local_timestamp }}: {{ entry.content }}</p>
         {% if entry.guided_responses_list %}
             <ul>
                 {% for response in entry.guided_responses_list %}
@@ -20,8 +20,9 @@
             </form>
         </div>
     {% endfor %}
-    <a href="/add_entry">Standard Journal Entry</a>
-    <a href="/guided_entry">Guided Journal Entry</a>
-    <a href="/view_entries">View My Entries</a>
+    <a href="/add_entry">Standard Journal Entry</a> | 
+    <a href="/guided_entry">Guided Journal Entry</a> | 
+    <a href="/view_entries">View My Entries</a> | 
+    <a href="{{ url_for('logout') }}">Logout</a> | 
 </body>
 </html>

@@ -3,6 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
+import pytz
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '54549fa9435f66d31b722b02d67ce3aa977dca103fada46d9dda268d3a16c38f'
@@ -37,7 +38,7 @@ class GuidedJournalResponse(db.Model):
 
 @app.route('/')
 def index():
-    return "Welcome to the Journal App!"
+    return render_template('index.html')
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -117,8 +118,12 @@ def add_entry():
 @login_required
 def view_entries():
     entries = JournalEntry.query.filter_by(user_id=current_user.id).order_by(JournalEntry.timestamp.desc()).all()
+    local_timezone = pytz.timezone("America/Los_Angeles")  # Replace with your time zone
+
     for entry in entries:
+        entry.local_timestamp = local_timezone.fromutc(entry.timestamp)
         entry.guided_responses_list = GuidedJournalResponse.query.filter_by(journal_entry_id=entry.id).all()
+
     return render_template('view_entries.html', entries=entries)
 
 
@@ -130,7 +135,7 @@ def login():
         user = User.query.filter_by(username=username).first()
         if user and check_password_hash(user.password_hash, password):
             login_user(user)
-            return redirect(url_for('index'))
+            return redirect(url_for('view_entries'))
         else:
             return 'Invalid username or password'
 
